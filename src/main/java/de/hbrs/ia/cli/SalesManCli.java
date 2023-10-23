@@ -66,6 +66,29 @@ public class SalesManCli {
         System.out.println("SalesMan created successfully.");
     }
 
+    private static void readSalesMan() {
+        System.out.print("Enter ID of the SalesMan you want to retrieve: ");
+        int id = scanner.nextInt();
+        scanner.nextLine(); // Consume the newline character
+
+        // Perform a query to retrieve the SalesMan by ID
+        Document query = new Document("id", id);
+        FindIterable<Document> result = salesmanDB.getCollection().find(query);
+
+        if (result.iterator().hasNext()) {
+            Document salesManDocument = result.iterator().next();
+            String firstName = salesManDocument.getString("firstname");
+            String lastName = salesManDocument.getString("lastname");
+
+            System.out.println("-- SalesMan Details --");
+            System.out.println("ID: " + id);
+            System.out.println("First Name: " + firstName);
+            System.out.println("Last Name: " + lastName);
+        } else {
+            System.out.println("-- SalesMan with ID " + id + " not found. --");
+        }
+    }
+
 
 
 }
