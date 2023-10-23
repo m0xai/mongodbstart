@@ -90,6 +90,40 @@ public class SalesManCli {
     }
 
 
+    private static void updateSalesMan() {
+        System.out.print("Enter ID of the SalesMan you want to update: ");
+        int id = scanner.nextInt();
+        scanner.nextLine(); // Consume the newline character
+
+        // Check if the SalesMan with the given ID exists
+        Document query = new Document("id", id);
+        FindIterable<Document> result = salesmanDB.getCollection().find(query);
+
+        if (result.iterator().hasNext()) {
+            System.out.print("Enter new first name: ");
+            String newFirstName = scanner.nextLine();
+
+            System.out.print("Enter new last name: ");
+            String newLastName = scanner.nextLine();
+
+            // Create an update query
+            Document updateQuery = new Document("$set", new Document("firstname", newFirstName).append("lastname", newLastName));
+
+            // Update the SalesMan's details
+            UpdateResult updateResult = salesmanDB.getCollection().updateOne(query, updateQuery);
+
+            if (updateResult.getModifiedCount() > 0) {
+                System.out.println("SalesMan with ID " + id + " updated successfully.");
+            } else {
+                System.out.println("SalesMan with ID " + id + " was not updated.");
+            }
+        } else {
+            System.out.println("SalesMan with ID " + id + " not found. Update operation aborted.");
+        }
+    }
+
+
+
 
 }
 
