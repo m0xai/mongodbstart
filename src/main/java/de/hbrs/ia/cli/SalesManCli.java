@@ -50,6 +50,22 @@ public class SalesManCli {
         }
     }
 
+    private static void createSalesMan() {
+        System.out.print("Enter first name: ");
+        String firstName = scanner.nextLine();
+
+        System.out.print("Enter last name: ");
+        String lastName = scanner.nextLine();
+
+        System.out.print("Enter ID: ");
+        int id = scanner.nextInt();
+        scanner.nextLine(); // Consume the newline character
+
+        SalesMan newSalesMan = new SalesMan(firstName, lastName, id);
+        salesmanDB.getCollection().insertOne(newSalesMan.toDocument());
+        System.out.println("SalesMan created successfully.");
+    }
+
 
 
 }
