@@ -2,6 +2,7 @@ package de.hbrs.ia.cli;
 
 
 import com.mongodb.client.FindIterable;
+import com.mongodb.client.result.DeleteResult;
 import de.hbrs.ia.MongoDbConnection;
 import de.hbrs.ia.model.EvaluationRecord;
 import org.bson.Document;
@@ -14,8 +15,6 @@ public class EvaluationRecordCli {
     private static MongoDbConnection salesmanCollection = MongoDbConnection.getSalesmanCollection();
 
     public static void main(String[] args) {
-        // Connect to MongoDB
-
         while (true) {
             System.out.println("Choose an operation for EvaluationRecord:");
             System.out.println("1. Create an EvaluationRecord");
@@ -25,7 +24,7 @@ public class EvaluationRecordCli {
             System.out.println("5. Exit");
 
             int choice = scanner.nextInt();
-            scanner.nextLine(); // Consume the newline character
+            scanner.nextLine();
 
             switch (choice) {
                 case 1:
@@ -53,17 +52,16 @@ public class EvaluationRecordCli {
     private static void createEvaluationRecord() {
         System.out.print("Enter Record ID: ");
         int recordId = scanner.nextInt();
-        scanner.nextLine(); // Consume the newline character
+        scanner.nextLine();
 
         System.out.print("Enter SalesMan ID: ");
         int salesmanId = scanner.nextInt();
-        scanner.nextLine(); // Consume the newline character
+        scanner.nextLine();
 
         System.out.print("Enter grade: ");
         int grade = scanner.nextInt();
-        scanner.nextLine(); // Consume the newline character
+        scanner.nextLine();
 
-        // Check if the SalesMan with the specified ID exists
         Document query = new Document("id", salesmanId);
         FindIterable<Document> result = salesmanCollection.getCollection().find(query);
 
@@ -79,16 +77,14 @@ public class EvaluationRecordCli {
     private static void readEvaluationRecord() {
         System.out.print("Enter SalesMan ID to view EvaluationRecords: ");
         int salesmanId = scanner.nextInt();
-        scanner.nextLine(); // Consume the newline character
+        scanner.nextLine();
 
-        // Check if the SalesMan with the specified ID exists
         Document query = new Document("id", salesmanId);
         FindIterable<Document> result = salesmanCollection.getCollection().find(query);
 
         if (result.iterator().hasNext()) {
             System.out.println("Evaluation Records for SalesMan with ID " + salesmanId + ":");
 
-            // Perform a query to retrieve EvaluationRecords for the specified SalesMan
             Document evaluationQuery = new Document("salesmanId", salesmanId);
             FindIterable<Document> evaluationResult = elevationCollection.getCollection().find(evaluationQuery);
 
@@ -109,31 +105,27 @@ public class EvaluationRecordCli {
     private static void updateEvaluationRecord() {
         System.out.print("Enter SalesMan ID to update EvaluationRecord: ");
         int salesmanId = scanner.nextInt();
-        scanner.nextLine(); // Consume the newline character
+        scanner.nextLine();
 
-        // Check if the SalesMan with the specified ID exists
         Document query = new Document("id", salesmanId);
         FindIterable<Document> result = salesmanCollection.getCollection().find(query);
 
         if (result.iterator().hasNext()) {
             System.out.print("Enter EvaluationRecord ID to update: ");
             int evaluationRecordId = scanner.nextInt();
-            scanner.nextLine(); // Consume the newline character
+            scanner.nextLine();
 
-            // Check if the EvaluationRecord with the specified ID exists
             Document evaluationQuery = new Document("id", evaluationRecordId);
-            evaluationQuery.append("salesmanId", salesmanId); // Ensure the EvaluationRecord belongs to the specified SalesMan
+            evaluationQuery.append("salesmanId", salesmanId);
             FindIterable<Document> evaluationResult = elevationCollection.getCollection().find(evaluationQuery);
 
             if (evaluationResult.iterator().hasNext()) {
                 System.out.print("Enter new grade: ");
                 int newGrade = scanner.nextInt();
-                scanner.nextLine(); // Consume the newline character
+                scanner.nextLine();
 
-                // Create an update query
                 Document updateQuery = new Document("$set", new Document("grade", newGrade));
 
-                // Update the EvaluationRecord's grade
                 elevationCollection.getCollection().updateOne(evaluationQuery, updateQuery);
 
                 System.out.println("EvaluationRecord with ID " + evaluationRecordId + " updated successfully.");
@@ -147,6 +139,30 @@ public class EvaluationRecordCli {
 
 
     private static void deleteEvaluationRecord() {
-        // Implement the delete operation for EvaluationRecord using the salesmanId
+        System.out.print("Enter SalesMan ID to delete EvaluationRecord: ");
+        int salesmanId = scanner.nextInt();
+        scanner.nextLine();
+
+        Document query = new Document("id", salesmanId);
+        FindIterable<Document> result = salesmanCollection.getCollection().find(query);
+
+        if (result.iterator().hasNext()) {
+            System.out.print("Enter EvaluationRecord ID to delete: ");
+            int evaluationRecordId = scanner.nextInt();
+            scanner.nextLine();
+
+            Document evaluationQuery = new Document("id", evaluationRecordId);
+            evaluationQuery.append("salesmanId", salesmanId);
+
+            DeleteResult deleteResult = elevationCollection.getCollection().deleteOne(evaluationQuery);
+
+            if (deleteResult.getDeletedCount() > 0) {
+                System.out.println("EvaluationRecord with ID " + evaluationRecordId + " deleted successfully.");
+            } else {
+                System.out.println("EvaluationRecord with ID " + evaluationRecordId + " does not exist or does not belong to SalesMan with ID " + salesmanId);
+            }
+        } else {
+            System.out.println("SalesMan with ID " + salesmanId + " does not exist. Delete operation aborted.");
+        }
     }
 }

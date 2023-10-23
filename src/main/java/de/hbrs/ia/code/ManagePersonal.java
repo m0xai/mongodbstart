@@ -1,5 +1,5 @@
 package de.hbrs.ia.code;
-import java.util.List;
+import de.hbrs.ia.model.EvaluationRecord;
 
 /**
  * Code lines are commented for suppressing compile errors.
@@ -8,7 +8,7 @@ public interface ManagePersonal {
 
     // public void createSalesMan( SalesMan record );
 
-    // public void addPerformanceReord( EvaluationRecord record , int sid );
+     public void addPerformanceReord(EvaluationRecord record , int sid );
 
     // public SalesMan readSalesMan( int sid );
 

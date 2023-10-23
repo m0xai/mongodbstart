@@ -15,8 +15,6 @@ public class SalesManCli {
     private static MongoDbConnection salesmanDB = MongoDbConnection.getSalesmanCollection();
 
     public static void main(String[] args) {
-        // Connect to MongoDB
-
         while (true) {
             System.out.println("Choose an operation:");
             System.out.println("1. Create a SalesMan");
@@ -26,7 +24,7 @@ public class SalesManCli {
             System.out.println("5. Exit");
 
             int choice = scanner.nextInt();
-            scanner.nextLine(); // Consume the newline character
+            scanner.nextLine();
 
             switch (choice) {
                 case 1:
@@ -59,7 +57,7 @@ public class SalesManCli {
 
         System.out.print("Enter ID: ");
         int id = scanner.nextInt();
-        scanner.nextLine(); // Consume the newline character
+        scanner.nextLine();
 
         SalesMan newSalesMan = new SalesMan(firstName, lastName, id);
         salesmanDB.getCollection().insertOne(newSalesMan.toDocument());
@@ -69,9 +67,8 @@ public class SalesManCli {
     private static void readSalesMan() {
         System.out.print("Enter ID of the SalesMan you want to retrieve: ");
         int id = scanner.nextInt();
-        scanner.nextLine(); // Consume the newline character
+        scanner.nextLine();
 
-        // Perform a query to retrieve the SalesMan by ID
         Document query = new Document("id", id);
         FindIterable<Document> result = salesmanDB.getCollection().find(query);
 
@@ -93,9 +90,8 @@ public class SalesManCli {
     private static void updateSalesMan() {
         System.out.print("Enter ID of the SalesMan you want to update: ");
         int id = scanner.nextInt();
-        scanner.nextLine(); // Consume the newline character
+        scanner.nextLine();
 
-        // Check if the SalesMan with the given ID exists
         Document query = new Document("id", id);
         FindIterable<Document> result = salesmanDB.getCollection().find(query);
 
@@ -106,10 +102,8 @@ public class SalesManCli {
             System.out.print("Enter new last name: ");
             String newLastName = scanner.nextLine();
 
-            // Create an update query
             Document updateQuery = new Document("$set", new Document("firstname", newFirstName).append("lastname", newLastName));
 
-            // Update the SalesMan's details
             UpdateResult updateResult = salesmanDB.getCollection().updateOne(query, updateQuery);
 
             if (updateResult.getModifiedCount() > 0) {
@@ -125,12 +119,10 @@ public class SalesManCli {
     private static void deleteSalesMan() {
         System.out.print("Enter ID of the SalesMan you want to delete: ");
         int id = scanner.nextInt();
-        scanner.nextLine(); // Consume the newline character
+        scanner.nextLine();
 
-        // Create a query to find the SalesMan by ID
         Document query = new Document("id", id);
 
-        // Perform the delete operation
         DeleteResult deleteResult = salesmanDB.getCollection().deleteOne(query);
 
         if (deleteResult.getDeletedCount() > 0) {
