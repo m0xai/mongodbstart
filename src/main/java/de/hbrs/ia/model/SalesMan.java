@@ -13,6 +13,18 @@ public class SalesMan {
         this.id = id;
     }
 
+    public static SalesMan fromDocument(Document document) {
+        if (document == null) {
+            return null;
+        }
+
+        String firstname = document.getString("firstname");
+        String lastname = document.getString("lastname");
+        Integer id = document.getInteger("id");
+
+        return new SalesMan(firstname, lastname, id);
+    }
+
     public String getFirstname() {
         return firstname;
     }
