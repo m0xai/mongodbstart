@@ -106,4 +106,47 @@ public class EvaluationRecordCli {
     }
 
 
+    private static void updateEvaluationRecord() {
+        System.out.print("Enter SalesMan ID to update EvaluationRecord: ");
+        int salesmanId = scanner.nextInt();
+        scanner.nextLine(); // Consume the newline character
+
+        // Check if the SalesMan with the specified ID exists
+        Document query = new Document("id", salesmanId);
+        FindIterable<Document> result = salesmanCollection.getCollection().find(query);
+
+        if (result.iterator().hasNext()) {
+            System.out.print("Enter EvaluationRecord ID to update: ");
+            int evaluationRecordId = scanner.nextInt();
+            scanner.nextLine(); // Consume the newline character
+
+            // Check if the EvaluationRecord with the specified ID exists
+            Document evaluationQuery = new Document("id", evaluationRecordId);
+            evaluationQuery.append("salesmanId", salesmanId); // Ensure the EvaluationRecord belongs to the specified SalesMan
+            FindIterable<Document> evaluationResult = elevationCollection.getCollection().find(evaluationQuery);
+
+            if (evaluationResult.iterator().hasNext()) {
+                System.out.print("Enter new grade: ");
+                int newGrade = scanner.nextInt();
+                scanner.nextLine(); // Consume the newline character
+
+                // Create an update query
+                Document updateQuery = new Document("$set", new Document("grade", newGrade));
+
+                // Update the EvaluationRecord's grade
+                elevationCollection.getCollection().updateOne(evaluationQuery, updateQuery);
+
+                System.out.println("EvaluationRecord with ID " + evaluationRecordId + " updated successfully.");
+            } else {
+                System.out.println("EvaluationRecord with ID " + evaluationRecordId + " does not exist for SalesMan with ID " + salesmanId);
+            }
+        } else {
+            System.out.println("SalesMan with ID " + salesmanId + " does not exist. Update operation aborted.");
+        }
+    }
+
+
+    private static void deleteEvaluationRecord() {
+        // Implement the delete operation for EvaluationRecord using the salesmanId
+    }
 }
