@@ -3,12 +3,15 @@ package test;
 import com.mongodb.MongoClient;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
+import com.mongodb.client.model.Updates;
 import de.hbrs.ia.model.SalesMan;
 import org.bson.Document;
+import org.bson.conversions.Bson;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 class HighPerformanceTest {
 
@@ -31,7 +34,8 @@ class HighPerformanceTest {
         supermongo = client.getDatabase("highperformance");
 
         // Get Collection 'salesmen' (creates one if not available)
-        salesmen = supermongo.getCollection("salesmen");
+        salesmen = supermongo.getCollection("salesman");
+        salesmen.drop();
     }
 
     @Test
@@ -76,6 +80,52 @@ class HighPerformanceTest {
         assertEquals( 90444 , id );
 
         // Deletion
+        salesmen.drop();
+    }
+
+
+    @Test
+    void updateSalesMan() {
+        SalesMan salesMan = new SalesMan("Alice", "Johnson", 90111);
+        salesmen.insertOne(salesMan.toDocument());
+
+        Document document = this.salesmen.find().first();
+        SalesMan retrievedSalesMan = SalesMan.fromDocument(document);
+
+        Document query = new Document().append("id",  retrievedSalesMan.getId());
+
+        Bson updatedSalesman = Updates.combine(
+                Updates.set("firstname", "NewFirst"),
+                Updates.set("lastname", "NewLast"),
+                Updates.set("id", 99999)
+        );
+
+        Document d = retrievedSalesMan.toDocument();
+        salesmen.updateOne(query, updatedSalesman);
+
+        Document updatedDocument = this.salesmen.find().first();
+        SalesMan updatedSalesMan = SalesMan.fromDocument(updatedDocument);
+
+        assertEquals("NewFirst", updatedSalesMan.getFirstname());
+        assertEquals("NewLast", updatedSalesMan.getLastname());
+        assertEquals(99999, updatedSalesMan.getId());
+
+        salesmen.drop();
+    }
+
+    @Test
+    void deleteSalesMan() {
+        SalesMan salesMan = new SalesMan("Jane", "Smith", 90122);
+        salesmen.insertOne(salesMan.toDocument());
+
+        Document document = this.salesmen.find().first();
+
+        salesmen.deleteOne(document);
+
+        Document deletedDocument = this.salesmen.find().first();
+
+        assertNull(deletedDocument); // The record should be deleted
+
         salesmen.drop();
     }
 }
