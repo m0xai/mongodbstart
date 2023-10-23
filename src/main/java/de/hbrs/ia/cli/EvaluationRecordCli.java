@@ -76,5 +76,34 @@ public class EvaluationRecordCli {
         }
     }
 
+    private static void readEvaluationRecord() {
+        System.out.print("Enter SalesMan ID to view EvaluationRecords: ");
+        int salesmanId = scanner.nextInt();
+        scanner.nextLine(); // Consume the newline character
+
+        // Check if the SalesMan with the specified ID exists
+        Document query = new Document("id", salesmanId);
+        FindIterable<Document> result = salesmanCollection.getCollection().find(query);
+
+        if (result.iterator().hasNext()) {
+            System.out.println("Evaluation Records for SalesMan with ID " + salesmanId + ":");
+
+            // Perform a query to retrieve EvaluationRecords for the specified SalesMan
+            Document evaluationQuery = new Document("salesmanId", salesmanId);
+            FindIterable<Document> evaluationResult = elevationCollection.getCollection().find(evaluationQuery);
+
+            for (Document evaluationDocument : evaluationResult) {
+                int evaluationId = evaluationDocument.getInteger("id");
+                int grade = evaluationDocument.getInteger("grade");
+
+                System.out.println("EvaluationRecord ID: " + evaluationId);
+                System.out.println("Grade: " + grade);
+                System.out.println("------------");
+            }
+        } else {
+            System.out.println("SalesMan with ID " + salesmanId + " does not exist or has no evaluation records.");
+        }
+    }
+
 
 }
