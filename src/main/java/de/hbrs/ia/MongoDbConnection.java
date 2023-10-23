@@ -26,11 +26,11 @@ public class MongoDbConnection {
         }
 
     public static MongoDbConnection getEvaluationCollection() {
-        return new MongoDbConnection("localhost", 27017, "personalTrack", "evaluation");
+        return new MongoDbConnection("localhost", 27017, "highperformance", "evaluation");
     }
 
     public static MongoDbConnection getSalesmanCollection() {
-        return new MongoDbConnection("localhost", 27017, "personalTrack", "evaluation");
+        return new MongoDbConnection("localhost", 27017, "highperformance", "salesman");
     }
 }
 
