@@ -122,8 +122,22 @@ public class SalesManCli {
         }
     }
 
+    private static void deleteSalesMan() {
+        System.out.print("Enter ID of the SalesMan you want to delete: ");
+        int id = scanner.nextInt();
+        scanner.nextLine(); // Consume the newline character
 
+        // Create a query to find the SalesMan by ID
+        Document query = new Document("id", id);
 
+        // Perform the delete operation
+        DeleteResult deleteResult = salesmanDB.getCollection().deleteOne(query);
 
+        if (deleteResult.getDeletedCount() > 0) {
+            System.out.println("SalesMan with ID " + id + " deleted successfully.");
+        } else {
+            System.out.println("SalesMan with ID " + id + " not found or was not deleted.");
+        }
+    }
 }
 
